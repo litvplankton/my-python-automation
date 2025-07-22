@@ -1,0 +1,43 @@
+# 1. 工作流程的名稱
+name: Run Python Script on a Schedule
+
+# 2. 觸發條件
+on:
+  # "schedule" 讓我們可以設定定時任務
+  schedule:
+    # cron 語法，'*/5 * * * *' 代表每 5 分鐘執行一次
+    # [小提示] cron 時間是世界標準時間 (UTC)，比台北時間慢 8 小時
+    - cron: '*/5 * * * *'
+  
+  # "workflow_dispatch" 讓我們可以手動點擊按鈕來觸發，方便測試
+  workflow_dispatch:
+
+# 3. 要執行的工作
+jobs:
+  # 自訂的工作名稱，例如 build
+  build:
+    # 選擇運行的虛擬機器環境
+    runs-on: ubuntu-latest
+
+    # 工作執行的步驟
+    steps:
+      # 步驟一：將專案的程式碼下載到虛擬機中
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # 步驟二：設定 Python 環境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # 您可以指定需要的 Python 版本
+
+      # 步驟三 (可選)：安裝依賴套件
+      # 如果您的 main.py 需要用到 requests, pandas 等套件，才需要這一步
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install requests
+
+      # 步驟四：執行 Python 腳本
+      - name: Run Python script
+        run: python main.py
